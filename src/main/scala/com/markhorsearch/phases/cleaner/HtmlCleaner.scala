@@ -42,7 +42,8 @@ class HtmlCleaner extends Processor {
      val newNode = new RuleTransformer(remove)(site.content.head)
      val stay = ListBuffer[Node]()
      populeText(newNode, Option.empty, stay)
-     new Document(stay toList, site.title, true)
+     
+     new Document(stay toList, site.title, true, site.site)
   }
   
   private def populeText(node: Node, parent: Option[Node], stay: ListBuffer[Node]) {
@@ -53,11 +54,25 @@ class HtmlCleaner extends Processor {
           case _ => 
         }
 		
-        if (node.isInstanceOf[Text] && 
-		    phraseRegex.findFirstIn(node.text).isDefined) {
+        val nodeText = node.text
+        val nodeWords = nodeText.split(" ").toList
+        
+        if (node.isInstanceOf[Text] &&
+            phraseRegex.findFirstIn(nodeText).isDefined &&
+		    similarity(nodeWords) > 1) {
 			if(parent.isDefined) stay += parent.get
 		}
         
     	node.child.foreach(c => populeText(c, Option(node), stay))
-    }
+  }
+  
+  private def similarity(words: List[String]) = {
+    val en = enWords.filter(w => words.contains(w))
+    val pt = ptWords.filter(w => words.contains(w))
+    
+    en.size + pt.size
+  }
+  
+  def enWords = List("is", "and", "or", "was", "it", "were", "when", "the")
+  def ptWords = List("e", "ou", "era", "isso", "isto", "a", "o")
 }

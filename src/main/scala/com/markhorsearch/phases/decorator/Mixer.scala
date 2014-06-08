@@ -9,7 +9,12 @@ class Mixer extends Processor {
   def process(common: PhaseCommon) = {
     var content = ""
     
-    common.documents.foreach(d => content = content + d.content.mkString)
+    common.documents.foreach(d => { 
+        val c = d.content.text 
+        
+    	content = content + c + "<hr />"+d.site.url + "\n" + d.links+"<hr />"
+      })
+      
     new FileWriter("C:\\Users\\kaiser\\Desktop\\markhorTest", content).write
   }
 }

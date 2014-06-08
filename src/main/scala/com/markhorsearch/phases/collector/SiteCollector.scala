@@ -15,12 +15,8 @@ class SiteCollector extends Processor {
   def process(common: PhaseCommon) = {
     var relevantSites = List[Site]()
     
-    for(document <- common.documents) {
-      if(document.relevantSites.size > 2)
-    	  relevantSites = relevantSites  ::: document.relevantSites.dropRight(3)
-       else
-          relevantSites = relevantSites  ::: document.relevantSites
-    }
+    for(document <- common.documents) 
+        relevantSites = relevantSites  ::: document.relevantSites
     
     val sites = common.sites ++ relevantSites
     val docs = for(site <- sites) yield getSite(site)
@@ -38,7 +34,7 @@ class SiteCollector extends Processor {
     	val page: Node = new HtmlParserMarkhor().load(new URL(site.url))
 
     	doc = new Document(List(page), 
-    			site.title.getOrElse((page \\ "title") mkString), false)
+    			site.title.getOrElse((page \\ "title") mkString), false, site)
     }catch {
     	case e: Exception => println(e.getMessage())
     }

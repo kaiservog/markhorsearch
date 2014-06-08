@@ -4,27 +4,32 @@ import scala.xml.Node
 import scala.xml.NodeSeq
 import com.markhorsearch.phases.core.Site
 
-class Document(val content: List[Node]	, val title: String, var cleaned: Boolean, val empty: Boolean = false) {
+class Document(val content: List[Node], val title: String, var cleaned: Boolean, val site: Site, val empty: Boolean = false) {
+    val images: NodeSeq = content \\ "img"
+    val links: NodeSeq = content \\ "a"
+    
     def relevantSites: List[Site] = {
-      val links = for(elm <- content) yield (elm \\ "a")
-
+      val links = content \\ "a"
       val trueLinks = links.filter(l => {
-          if(l.size < 1) false
-          else {
-	    	  val href: String = l(0).attribute("href").getOrElse("").toString
-	          href.size > 5 && "#".r.findFirstIn(href).isEmpty
-          }
+    	  val href: String = l.attribute("href").getOrElse("").toString
+          href.size > 5 && "#".r.findFirstIn(href).isEmpty
       })
       
-      val newLinks = trueLinks.distinct.dropRight(3)
+      var newLinks: NodeSeq = NodeSeq.Empty
       
-      for(link <- newLinks) 
-        yield new Site(link(0).attribute("href").getOrElse("").toString,
-        				link(0).attribute("href").getOrElse("").toString,
+      if(trueLinks.size > 3)
+    	  newLinks = trueLinks.slice(0, 3)
+      else
+          newLinks = trueLinks
+      
+      val sites = for(link <- newLinks) 
+        yield new Site(link.attribute("href").getOrElse("").toString,
+        				link.attribute("href").getOrElse("").toString,
         				Option.empty[String])
+      sites toList
 	}
-
 }
  object Document {
-   val empty = { new Document(List.empty[Node], "", false, true) }
+   val siteEmpty = new Site("", "", Option.empty)
+   val empty = { new Document(List.empty[Node], "", false, siteEmpty, true) }
  }
