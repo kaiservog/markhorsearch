@@ -7,6 +7,7 @@ import com.markhorsearch.phases.core.Site
 class Document(val content: List[Node], val title: String, var cleaned: Boolean, val site: Site, val empty: Boolean = false) {
     val images: NodeSeq = content \\ "img"
     val links: NodeSeq = content \\ "a"
+    var tables: NodeSeq = content \\ "table"
     
     def relevantSites: List[Site] = {
       val links = content \\ "a"
@@ -28,6 +29,12 @@ class Document(val content: List[Node], val title: String, var cleaned: Boolean,
         				Option.empty[String])
       sites toList
 	}
+    
+    def newDocument(content: List[Node], cleaned: Boolean): Document = {
+      val neo = new Document(content, this.title, cleaned, this.site)
+      neo.tables = this.tables
+      neo
+    }
 }
  object Document {
    val siteEmpty = new Site("", "", Option.empty)

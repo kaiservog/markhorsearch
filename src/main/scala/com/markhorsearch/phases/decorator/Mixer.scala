@@ -12,9 +12,10 @@ class Mixer extends Processor {
     common.documents.foreach(d => { 
         val c = d.content.text 
         
-    	content = content + c + "<hr />"+d.site.url + "\n" + d.links+"<hr />"
+    	content = content + c + "<hr />"+d.site.provider + "\n" + d.links+"<hr />"
       })
       
+    
     new FileWriter("C:\\Users\\kaiser\\Desktop\\markhorTest", content).write
   }
 }

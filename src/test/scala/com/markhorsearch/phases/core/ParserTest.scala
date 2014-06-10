@@ -17,7 +17,7 @@ import scala.collection.mutable.Seq
 import scala.collection.mutable.Set
 import scala.collection.mutable.ListBuffer
 
-@RunWith(classOf[JUnitRunner])
+//@RunWith(classOf[JUnitRunner])
 class ParserTest extends FlatSpec  {
     "Parser" should " only remove menu" in {
      val page = """<html>
