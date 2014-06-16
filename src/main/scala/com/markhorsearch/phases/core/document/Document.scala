@@ -3,11 +3,13 @@ package com.markhorsearch.phases.core.document
 import scala.xml.Node
 import scala.xml.NodeSeq
 import com.markhorsearch.phases.core.Site
+import com.markhorsearch.phases.collector.UrlNormalizer
 
 class Document(val content: List[Node], val title: String, var cleaned: Boolean, val site: Site, val empty: Boolean = false) {
     val images: NodeSeq = content \\ "img"
     val links: NodeSeq = content \\ "a"
     var tables: NodeSeq = content \\ "table"
+    var favicon: Option[String] = Option.empty[String]
     
     def relevantSites: List[Site] = {
       val links = content \\ "a"
@@ -24,7 +26,7 @@ class Document(val content: List[Node], val title: String, var cleaned: Boolean,
           newLinks = trueLinks
       
       val sites = for(link <- newLinks) 
-        yield new Site(link.attribute("href").getOrElse("").toString,
+        yield new Site(UrlNormalizer(link.attribute("href").getOrElse("").toString, site.provider),
         				link.attribute("href").getOrElse("").toString,
         				Option.empty[String])
       sites toList

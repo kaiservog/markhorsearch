@@ -15,15 +15,10 @@ class Generate {
 	  
 	  new GoogleEngine process common
 	  
-	  println("1"+" "+common.sites.size+"/"+common.documents.size)
 	  new SiteCollector process common
-	  println("2"+" "+common.sites.size+"/"+common.documents.size)
 	  new HtmlCleaner process common
-	  println("3"+" "+common.sites.size+"/"+common.documents.size)
 	  new SiteCollector process common
-	  println("4"+" "+common.sites.size+"/"+common.documents.size)
 	  new HtmlCleaner process common
-	  println("5"+" "+common.documents.size+"/"+common.documents.size)
 	  new Mixer process common
 	  common
   }
