@@ -21,6 +21,8 @@ class SiteCollector extends Processor {
     val sites = common.sites ++ relevantSites
     val docs = for(site <- sites) yield getSite(site)
     common.documents = common.documents ::: (docs filter hasContent)
+    
+    println("docs"+common.documents)
   }
   
   private def hasContent(d: Document) ={
@@ -31,7 +33,7 @@ class SiteCollector extends Processor {
     var doc = Document.empty
     
     try {
-    	val page: Node = new HtmlParserMarkhor().load(new URL(site.url))
+    	val page: Node = new HtmlParserMarkhor().load(site.url)
 
     	doc = new Document(List(page), 
     			site.title.getOrElse((page \\ "title") mkString), false, site)
@@ -40,5 +42,4 @@ class SiteCollector extends Processor {
     }
     doc
   }
-  
 }

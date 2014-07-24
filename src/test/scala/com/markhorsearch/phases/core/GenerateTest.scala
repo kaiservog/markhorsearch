@@ -4,14 +4,28 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.specs2.runner.JUnitRunner
 import com.markhorsearch.phases.core.document.Document
+import com.markhorsearch.phases.collector.SiteCollector
+import com.markhorsearch.phases.cleaner.HtmlCleaner
+import com.markhorsearch.phases.decorator.Mixer
 
 
 @RunWith(classOf[JUnitRunner])
 class GenerateTest extends FlatSpec {
 	"Generate" should "create phases" in {
-	  val g = new Generate
-	  println(g.generate)
+	  val common = new PhaseCommon("")
+	  
+	  common.sites = 
+	    new Site("""C:\Users\kaiser\Desktop\markhorTest\sitesTest\site1.htm""","site1", Option("test1")) ::
+	    new Site("""C:\Users\kaiser\Desktop\markhorTest\sitesTest\site2.htm""","site2", Option("test2")) ::
+	    Nil
+	    
+	  new SiteCollector process common
+	  new HtmlCleaner process common
+	  new SiteCollector process common
+	  new HtmlCleaner process common
+	  new Mixer process common
 	}
+	
 	
 	"Document" should "have 3 relevant links" in {
 	  val document = new Document(List(page), "teste", true, Document.siteEmpty)

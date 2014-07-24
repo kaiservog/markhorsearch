@@ -21,8 +21,15 @@ import java.lang.Exception
 class HtmlParserMarkhor {
     lazy val adapter = new NoBindingFactoryAdapter
 	lazy val parser = (new SAXFactoryImpl).newSAXParser
-	 
-	def load(url: URL, headers: Map[String, String] = Map.empty): Node = {
+	
+	def load(url: String, headers: Map[String, String] = Map.empty): Node = {
+      if(url.startsWith("http") || url.startsWith("www"))
+        loadWww(new URL(url))
+      else
+        loadLocal(url)
+    }
+    
+	def loadWww(url: URL, headers: Map[String, String] = Map.empty): Node = {
       var node: Node = <html></html>
       try {
 		val conn = url.openConnection().asInstanceOf[HttpURLConnection]
@@ -37,9 +44,9 @@ class HtmlParserMarkhor {
       node
     }
     
-    def load(content: String): Node =
+    def loadLocal(url: String): Node =
     {
-      val file= new File("C:\\Users\\kaiser\\Documents\\stack.htm");
+      val file= new File(url);
       val inputStream= new FileInputStream(file);
 	  val reader = new InputStreamReader(inputStream,"UTF-8");
 	  val is = new InputSource(reader);

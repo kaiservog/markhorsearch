@@ -12,12 +12,13 @@ class Mixer extends Processor {
     
     common.documents.foreach(d => {
         val links = for(sites <- d.relevantSites) yield sites.url
-        val c = d.content.text + links.mkString(" X ") 
+        val imgs = d.images
         
-    	content = content + c + " " + d.favicon.getOrElse("FUCKKKK") + "<hr/>"
+        val c = d.content.text + links.mkString(" X ") 
+        if(c.trim().length() > 50) 
+        	content = content + c + " " + d.favicon.getOrElse("FUCKKKK") + "<hr/>"
       })
       
-    
-    new FileWriter("C:\\Users\\kaiser\\Desktop\\markhorTest", content).write
+      common.content = content
   }
 }
